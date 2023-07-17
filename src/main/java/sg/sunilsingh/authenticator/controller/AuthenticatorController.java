@@ -21,17 +21,17 @@ public class AuthenticatorController {
     AuthenticatorService service;
 
     @PostMapping(path = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> authenticate(@RequestBody String payload) {
+    public ResponseEntity<String> authenticate(@RequestBody String payload) {
 
         LoginInfo info = LoginInfo.create(payload);
         ReturnMessage msg = new ReturnMessage();
 
         if (service.validateLogin(info)) {
             msg.setMessage("User " + info.getUsername() + " authenticated successfully.");
-            return ResponseEntity.status(HttpStatus.CREATED).body(msg.toJSON().toString());
+            return new ResponseEntity<String>(msg.toJSON().toString(), HttpStatus.OK);
         } else {
             msg.setMessage("Invalid user! Please try again.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(msg.toJSON().toString());
+            return new ResponseEntity<String>(msg.toJSON().toString(), HttpStatus.UNAUTHORIZED);
         }
 
     }
